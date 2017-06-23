@@ -2,5 +2,38 @@ Task List for Formstack test assignment, June 2017, by Deniz Ozsen
 ==================================================================
 
 
-Prepare for 
+
+Set up development environment
+
+  Details:
+     * Set up and provision Vagrant image
+     * Ensure Apache is working
+     * Ensure MySQL is working
+     * Ensure PHPUnit is installed and working
+     * Create project structure, according to composer standards and with PSR-2 autoloader
+
+  Deliverables:
+     * A fully functional development environment, with the necessary
+       tools listed in the description of the assignment.
+
+  Estimate: 1-2 hours
+  Actual:
+  Status: In Progress
+
+
+
+Analyse requirements and create development tasks
+
+  Details:
+      * Analyse requirements and determine what functionality will be implemented
+      * Break down solution into tasks and sub-tasks
+      * Provide rough estimate for each task
+
+  Deliverables:
+      * Development tasks required to finish the project
+
+  Estimate: 2-4 hours
+  Actual: 
+  Status: To Do
+
 
