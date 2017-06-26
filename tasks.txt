@@ -17,7 +17,7 @@ T1. Set up development environment
        tools listed in the description of the assignment.
 
   Estimate: 1-2 hours
-  Actual: 1h 45m
+  Actual: 2h
   Status: Done
 
 
@@ -85,8 +85,8 @@ T5. CLI framework
   Deliverables:
       * Classes implementing the required functionality
   Estimate: 1-3 hours
-  Actual:
-  Status: To Do
+  Actual: 5h
+  Status: Done
 
 
 
@@ -99,7 +99,7 @@ T6. CLI application for user management
       * A class that extends CliApp and implements the required functionality
   Estimate: 30m
   Actual:
-  Status: To Do
+  Status: In Progress
 
 
 
