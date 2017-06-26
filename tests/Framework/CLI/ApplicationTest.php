@@ -173,47 +173,4 @@ class ApplicationTest extends TestCase
         $this->expectException(\Exception::class);
         $this->start([], new \stdClass());
     }
-
-    public function testInvokeAction_ThrowsForNonExistentAction()
-    {
-        $this->expectException(\Exception::class);
-        $this->start();
-        $this->fixture->invokeAction(self::NON_EXISTENT_CONTROLLER_ACTION);
-    }
-
-    public function testInvokeAction_CallsControllerMethodWithoutArgs()
-    {
-        $this->controller_mock->expects($this->once())->method(self::CONTROLLER_ACTION_WITHOUT_ARGS);
-        $this->start();
-        $this->fixture->invokeAction(self::CONTROLLER_ACTION_WITHOUT_ARGS);
-    }
-
-    public function testInvokeAction_CallsControllerMethodWithArgs()
-    {
-        $arg1_name = 'my_string_arg';
-        $arg1_value = 'my_string_value';
-        $arg2_name = 'my_int_arg';
-        $arg2_value = 123;
-        $this->controller_mock->expects($this->once())
-            ->method(self::CONTROLLER_ACTION_WITH_ARGS)
-            ->with($arg1_value, $arg2_value);
-        $this->start();
-        $this->fixture->invokeAction(self::CONTROLLER_ACTION_WITH_ARGS, [$arg1_name=>$arg1_value, $arg2_name=>$arg2_value]);
-    }
-
-    public function testInvokeAction_ReturnsControllerReturnValue()
-    {
-        $arg1_name = 'my_string_arg';
-        $arg1_value = 'my_string_value';
-        $arg2_name = 'my_int_arg';
-        $arg2_value = 123;
-        $expected_return_value = 'my return value';
-        $this->controller_mock->expects($this->any())
-            ->method(self::CONTROLLER_ACTION_WITH_ARGS)
-            ->with($arg1_value, $arg2_value)
-            ->will($this->returnValue($expected_return_value));
-        $this->start();
-        $actual_return_value = $this->fixture->invokeAction(self::CONTROLLER_ACTION_WITH_ARGS, [$arg1_name=>$arg1_value, $arg2_name=>$arg2_value]);
-        $this->assertEquals($expected_return_value, $actual_return_value);
-    }
 }

@@ -150,23 +150,6 @@ abstract class Application
     }
 
     /**
-     * Invokes the given controller action with the given parameters.
-     *
-     * @param string $action
-     * @param array $arguments
-     * @return null|string the data returned by the action, as a terminal-friendly string, or null, if there is no return data
-     * @throws \ErrorException if the CLI application's controller was not set or the given action does not exist
-     */
-    public function invokeAction($action, array $arguments = [])
-    {
-        if (!is_callable([$this->controller, $action])) {
-            throw new \ErrorException("The action {$action} is not defined by controller " . get_class($this->controller));
-        }
-
-        return call_user_func_array([$this->controller, $action], $arguments);
-    }
-
-    /**
      * Stores the given argument configuration for use by this application.
      *
      * @param array $argument_configuration
