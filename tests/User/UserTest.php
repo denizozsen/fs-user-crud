@@ -3,13 +3,14 @@
 namespace FsTest\User;
 
 use AOrm\Crud;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for the User model class.
  *
  * @package FsTest\User
  */
-class UserTest extends \PHPUnit_Framework_TestCase
+class UserTest extends TestCase
 {
     public function testCreateCrudInstance_IsACrud()
     {
