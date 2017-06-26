@@ -2,6 +2,7 @@
 
 namespace FsTest\Framework\CLI;
 
+use FsTest\Framework\Core\Controller;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,13 +12,24 @@ use PHPUnit\Framework\TestCase;
  */
 class ApplicationTest extends TestCase
 {
+    const CONTROLLER_ACTION_WITHOUT_ARGS = 'withoutArgs';
+    const CONTROLLER_ACTION_WITH_ARGS = 'withArgs';
+    const NON_EXISTENT_CONTROLLER_ACTION = 'nonExistent';
+
     /** @var Application $fixture */
     private $fixture;
+
+    /** @var \PHPUnit_Framework_MockObject_MockObject $mock_controller */
+    private $mock_controller;
 
     protected function setUp()
     {
         parent::setUp();
         $this->fixture = new Application();
+        $this->mock_controller =
+            $this->getMockBuilder(Controller::class)
+            ->setMethods([self::CONTROLLER_ACTION_WITHOUT_ARGS, self::CONTROLLER_ACTION_WITH_ARGS])
+            ->getMock();
     }
 
     public function testSetArgumentConfiguration_ThrowsOnInvalidStructure1()
@@ -89,13 +101,63 @@ class ApplicationTest extends TestCase
         $this->assertEquals([ 'foo'=>'bar', 'another'=>'another', 'yet-another'=>'yes', 'm1' => 'hello', 'm2' => 'world' ], $this->fixture->getArguments());
     }
 
-//    public function testSetController()
-//    {
-//        $this->fixture->setController(null);
-//    }
-//
-//    public function testInvokeAction()
-//    {
-//        $this->fixture->invokeAction(null, null);
-//    }
+    public function testGetController_NullIfNoneSet()
+    {
+        $this->assertNull($this->fixture->getController());
+    }
+
+    public function testGetController_ReturnsSetInstance()
+    {
+        $this->fixture->setController($this->mock_controller);
+        $this->assertSame($this->mock_controller, $this->fixture->getController());
+    }
+
+    public function testInvokeAction_ThrowsIfNoControllerSet()
+    {
+        $this->expectException(\Exception::class);
+        $this->fixture->invokeAction('dummyActionName');
+    }
+
+    public function testInvokeAction_ThrowsForNonExistentAction()
+    {
+        $this->expectException(\Exception::class);
+        $this->fixture->setController($this->mock_controller);
+        $this->fixture->invokeAction(self::NON_EXISTENT_CONTROLLER_ACTION);
+    }
+
+    public function testInvokeAction_CallsControllerMethodWithoutArgs()
+    {
+        $this->mock_controller->expects($this->once())->method(self::CONTROLLER_ACTION_WITHOUT_ARGS);
+        $this->fixture->setController($this->mock_controller);
+        $this->fixture->invokeAction(self::CONTROLLER_ACTION_WITHOUT_ARGS);
+    }
+
+    public function testInvokeAction_CallsControllerMethodWithArgs()
+    {
+        $arg1_name = 'my_string_arg';
+        $arg1_value = 'my_string_value';
+        $arg2_name = 'my_int_arg';
+        $arg2_value = 123;
+        $this->mock_controller->expects($this->once())
+            ->method(self::CONTROLLER_ACTION_WITH_ARGS)
+            ->with($arg1_value, $arg2_value);
+        $this->fixture->setController($this->mock_controller);
+        $this->fixture->invokeAction(self::CONTROLLER_ACTION_WITH_ARGS, [$arg1_name=>$arg1_value, $arg2_name=>$arg2_value]);
+    }
+
+    public function testInvokeAction_ReturnsControllerReturnValue()
+    {
+        $arg1_name = 'my_string_arg';
+        $arg1_value = 'my_string_value';
+        $arg2_name = 'my_int_arg';
+        $arg2_value = 123;
+        $expected_return_value = 'my return value';
+        $this->mock_controller->expects($this->any())
+            ->method(self::CONTROLLER_ACTION_WITH_ARGS)
+            ->with($arg1_value, $arg2_value)
+            ->will($this->returnValue($expected_return_value));
+        $this->fixture->setController($this->mock_controller);
+        $actual_return_value = $this->fixture->invokeAction(self::CONTROLLER_ACTION_WITH_ARGS, [$arg1_name=>$arg1_value, $arg2_name=>$arg2_value]);
+        $this->assertEquals($expected_return_value, $actual_return_value);
+    }
 }

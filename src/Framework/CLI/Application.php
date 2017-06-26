@@ -1,6 +1,7 @@
 <?php
 
 namespace FsTest\Framework\CLI;
+use FsTest\Framework\Core\Controller;
 
 /**
  * Base class for CLI applications (aka command line tools)..
@@ -18,6 +19,8 @@ class Application
     private $argument_configuration_by_short_name = [];
     private $argument_configuration_by_position = [];
     private $arguments = null;
+
+    private $controller = null;
 
     public function __construct()
     {
@@ -133,19 +136,39 @@ class Application
      *
      * @param Controller $controller the controller to set
      */
-    public function setController(/* Controller */ $controller)
+    public function setController(Controller $controller)
     {
-        throw new \ErrorException("setController() is not yet implemented");
+        $this->controller = $controller;
     }
 
     /**
-     * @param $action
-     * @param $arguments
-     * @return string|null the data returned by the action, as a terminal-friendly string, or null, if there is no return data
+     * Returns the CLI application's controller, or null, if none has been set.
+     *
+     * @return Controller|null the CLI application's controller, or null, if none has been set
      */
-    public function invokeAction($action, $arguments)
+    public function getController()
     {
-        throw new \ErrorException("invokeAction() is not yet implemented");
+        return $this->controller;
+    }
+
+    /**
+     * Invokes the given controller action with the given parameters.
+     *
+     * @param string $action
+     * @param array $arguments
+     * @return null|string the data returned by the action, as a terminal-friendly string, or null, if there is no return data
+     * @throws \ErrorException if the CLI application's controller was not set or the given action does not exist
+     */
+    public function invokeAction($action, array $arguments = [])
+    {
+        if (!$this->controller) {
+            throw new \ErrorException("The CLI application's controller is not set");
+        }
+        if (!is_callable([$this->controller, $action])) {
+            throw new \ErrorException("The action {$action} is not defined by controller " . get_class($this->controller));
+        }
+
+        return call_user_func_array([$this->controller, $action], $arguments);
     }
 
     /**
