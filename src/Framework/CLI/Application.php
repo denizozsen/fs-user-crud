@@ -2,13 +2,14 @@
 
 namespace FsTest\Framework\CLI;
 use FsTest\Framework\Core\Controller;
+use PHPUnit\Framework\Error\Error;
 
 /**
  * Base class for CLI applications (aka command line tools)..
  *
  * @package FsTest\Framework
  */
-class Application
+abstract class Application
 {
     const ARG_TYPE_SIMPLE = 'simple';
     const ARG_TYPE_NAMED  = 'named';
@@ -22,13 +23,21 @@ class Application
 
     private $controller = null;
 
-    public function __construct()
-    {
-    }
+    /**
+     * This method must be overridden by the CLI application sub class to implement the program.
+     */
+    protected abstract function run();
 
     /**
-     * Sets the argument configuration for this application, as associative array whose structure is illistrated
-     * by the following example.
+     * This method must be overridden by the CLI application sub class to provide the CLI application's controller.
+     *
+     * @return Controller the CLI application's controller
+     */
+    protected abstract function getController();
+
+    /**
+     * This method may be overridden by the CLI application sub class to return the argument configuration for the
+     * application, as associative array whose structure is illustrated by the example below.
      *
      * If we want to allow the following scheme:
      *
@@ -48,25 +57,34 @@ class Application
      *     [ 'type' => App::ARG_TYPE_SIMPLE, 'name' => 'my_mandator_arg', 'position' => 0 ]
      * ]
      *
-     * @param array $argument_configuration the argument configuration, as associative array
-     * @throws \ErrorException if the given argument configuration is invalid
+     * @return array $argument_configuration the argument configuration, as associative array
      */
-    public function setArgumentConfiguration($argument_configuration)
+    protected function getArgumentConfiguration()
     {
-        $this->validateArgumentConfiguration($argument_configuration);
+        return [];
+    }
 
-        // Index simple entries by name, short_name and position
-        foreach ($argument_configuration as $entry) {
-            if (isset($entry['name'])) {
-                $this->argument_configuration[$entry['name']] = $entry;
-            }
-            if (isset($entry['short_name'])) {
-                $this->argument_configuration_by_short_name[$entry['short_name']] = $entry;
-            }
-            if (isset($entry['position'])) {
-                $this->argument_configuration_by_position[$entry['position']] = $entry;
-            }
+    /**
+     * This is the entry point for the CLI application, called by the framework.
+     *
+     * @throws \ErrorException if the argument configuration returned by getArgumentConfiguration() is invalid
+     */
+    public function start()
+    {
+        // Validate and install argument configuration
+        $argument_configuration = $this->getArgumentConfiguration();
+        $this->validateArgumentConfiguration($argument_configuration);
+        $this->useArgumentConfiguration($argument_configuration);
+
+        // Install controller
+        $controller = $this->getController();
+        if (!is_a($controller, Controller::class)) {
+            throw new \ErrorException("Controller must extend " . Controller::class . ", was: " . get_class($controller));
         }
+        $this->controller = $controller;
+
+        // Call the run() method implemented by this CLI application sub class
+        $this->run();
     }
 
     /**
@@ -132,26 +150,6 @@ class Application
     }
 
     /**
-     * Sets the controller to be used by the application
-     *
-     * @param Controller $controller the controller to set
-     */
-    public function setController(Controller $controller)
-    {
-        $this->controller = $controller;
-    }
-
-    /**
-     * Returns the CLI application's controller, or null, if none has been set.
-     *
-     * @return Controller|null the CLI application's controller, or null, if none has been set
-     */
-    public function getController()
-    {
-        return $this->controller;
-    }
-
-    /**
      * Invokes the given controller action with the given parameters.
      *
      * @param string $action
@@ -161,14 +159,32 @@ class Application
      */
     public function invokeAction($action, array $arguments = [])
     {
-        if (!$this->controller) {
-            throw new \ErrorException("The CLI application's controller is not set");
-        }
         if (!is_callable([$this->controller, $action])) {
             throw new \ErrorException("The action {$action} is not defined by controller " . get_class($this->controller));
         }
 
         return call_user_func_array([$this->controller, $action], $arguments);
+    }
+
+    /**
+     * Stores the given argument configuration for use by this application.
+     *
+     * @param array $argument_configuration
+     */
+    private function useArgumentConfiguration(array $argument_configuration)
+    {
+        // Index simple entries by name, short_name and position
+        foreach ($argument_configuration as $entry) {
+            if (isset($entry['name'])) {
+                $this->argument_configuration[$entry['name']] = $entry;
+            }
+            if (isset($entry['short_name'])) {
+                $this->argument_configuration_by_short_name[$entry['short_name']] = $entry;
+            }
+            if (isset($entry['position'])) {
+                $this->argument_configuration_by_position[$entry['position']] = $entry;
+            }
+        }
     }
 
     /**
@@ -179,6 +195,10 @@ class Application
      */
     private function validateArgumentConfiguration($argument_configuration)
     {
+        if (!is_array($argument_configuration)) {
+            throw new \ErrorException("Argument configuration must be an array");
+        }
+
         $largest_mandatory_position = PHP_INT_MIN;
         $smallest_optional_position = PHP_INT_MAX;
         foreach ($argument_configuration as $entry) {

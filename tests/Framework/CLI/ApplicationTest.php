@@ -18,69 +18,136 @@ class ApplicationTest extends TestCase
 
     /** @var Application $fixture */
     private $fixture;
+    /** @var \PHPUnit_Framework_MockObject_MockObject $fixture_mock */
+    private $fixture_mock;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject $mock_controller */
-    private $mock_controller;
+    /** @var Application $fixture_without_argument_configuration */
+    private $fixture_without_argument_configuration;
+    /** @var \PHPUnit_Framework_MockObject_MockObject $fixture_without_argument_configuration_mock*/
+    private $fixture_without_argument_configuration_mock;
+
+    /** @var Controller $controller */
+    private $controller;
+    /** @var \PHPUnit_Framework_MockObject_MockObject $controller_mock */
+    private $controller_mock;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->fixture = new Application();
-        $this->mock_controller =
+
+        $this->fixture_mock = $this
+            ->getMockBuilder(Application::class)
+            ->setMethods(['run', 'getArgumentConfiguration', 'getController'])
+            ->getMockForAbstractClass();
+        $this->fixture = $this->fixture_mock;
+
+        $this->fixture_without_argument_configuration_mock = $this
+            ->getMockBuilder(Application::class)
+            ->setMethods(['run', 'getController'])
+            ->getMockForAbstractClass();
+        $this->fixture_without_argument_configuration = $this->fixture_without_argument_configuration_mock;
+
+        $this->controller_mock =
             $this->getMockBuilder(Controller::class)
             ->setMethods([self::CONTROLLER_ACTION_WITHOUT_ARGS, self::CONTROLLER_ACTION_WITH_ARGS])
             ->getMock();
+        $this->controller = $this->controller_mock;
     }
 
-    public function testSetArgumentConfiguration_ThrowsOnInvalidStructure1()
+    private function start($argument_configuration = [], $controller = null)
     {
-        $this->expectException(\Exception::class);
-        $this->fixture->setArgumentConfiguration([ ['name' => 'foo'] ]);
+        $this->fixture_mock
+            ->expects($this->any())
+            ->method('getArgumentConfiguration')
+            ->willReturn($argument_configuration);
+
+        $this->fixture_mock
+            ->expects($this->any())
+            ->method('getController')
+            ->willReturn($controller ?: $this->controller);
+
+        $this->fixture->start();
     }
 
-    public function testSetArgumentConfiguration_ThrowsOnInvalidStructure2()
+    private function startWithoutArgumentConfiguration($controller = null)
     {
-        $this->expectException(\Exception::class);
-        $this->fixture->setArgumentConfiguration([ ['type' => 'invalid_type'] ]);
+        $this->fixture_without_argument_configuration_mock
+            ->expects($this->any())
+            ->method('getController')
+            ->willReturn($controller ?: $this->controller);
+
+        $this->fixture_without_argument_configuration->start();
     }
 
-    public function testSetArgumentConfiguration_ThrowsOnInvalidStructure3()
+    public function testArgumentConfiguration_ThrowsOnInvalidStructure1()
     {
         $this->expectException(\Exception::class);
-        $this->fixture->setArgumentConfiguration([ ['type' => Application::ARG_TYPE_SIMPLE, 'position' => 0] ]);
+        $this->start(123);
     }
 
-    public function testSetArgumentConfiguration_ThrowsOnInvalidStructure4()
+    public function testArgumentConfiguration_ThrowsOnInvalidStructure2()
     {
         $this->expectException(\Exception::class);
-        $this->fixture->setArgumentConfiguration([ ['name' => 'foo', 'type' => Application::ARG_TYPE_SIMPLE] ]);
+        $this->start([ ['name' => 'foo'] ]);
     }
 
-    public function testSetArgumentConfiguration_ThrowsOnInvalidStructure5()
+    public function testArgumentConfiguration_ThrowsOnInvalidStructure3()
     {
         $this->expectException(\Exception::class);
-        $this->fixture->setArgumentConfiguration([
+        $this->start([ ['type' => 'invalid_type'] ]);
+    }
+
+    public function testArgumentConfiguration_ThrowsOnInvalidStructure4()
+    {
+        $this->expectException(\Exception::class);
+        $this->start([ ['type' => Application::ARG_TYPE_SIMPLE, 'position' => 0] ]);
+    }
+
+    public function testArgumentConfiguration_ThrowsOnInvalidStructure5()
+    {
+        $this->expectException(\Exception::class);
+        $this->start([ ['name' => 'foo', 'type' => Application::ARG_TYPE_SIMPLE] ]);
+    }
+
+    public function testArgumentConfiguration_ThrowsOnInvalidStructure6()
+    {
+        $this->expectException(\Exception::class);
+        $this->start([
             ['name' => 'foo', 'type' => Application::ARG_TYPE_SIMPLE, 'position' => 0, 'optional'=>true],
             ['name' => 'bar', 'type' => Application::ARG_TYPE_SIMPLE, 'position' => 1]
         ]);
     }
 
+    public function testArgumentConfiguration_BaseImplementationReturnsEmptyArray()
+    {
+        $this->startWithoutArgumentConfiguration();
+
+        // Call protected method getArgumentConfiguration reflectively
+        $reflection = new \ReflectionClass(get_class($this->fixture_without_argument_configuration));
+        $method = $reflection->getMethod('getArgumentConfiguration');
+        $method->setAccessible(true);
+        $actual = $method->invokeArgs($this->fixture_without_argument_configuration, []);
+        $this->assertEquals([], $actual);
+    }
+
     public function testGetArguments_WithoutConfig1()
     {
         $_SERVER['argv'] = [ 'hello', 'world' ];
+        $this->start([]);
         $this->assertEquals([ 'hello', 'world' ], $this->fixture->getArguments());
     }
 
     public function testGetArguments_WithoutConfig2()
     {
         $_SERVER['argv'] = [ '--foo', 'bar', '-a', 'some_value', 'hello', 'world' ];
+        $this->start([]);
         $this->assertEquals([ 'foo' => 'bar', 'a' => 'some_value', 'hello', 'world' ], $this->fixture->getArguments());
     }
 
     public function testGetArguments_WithConfig1()
     {
         $_SERVER['argv'] = [ 'hello', 'world' ];
-        $this->fixture->setArgumentConfiguration([
+        $this->start([
             [ 'type' => Application::ARG_TYPE_SWITCH, 'name' => 'irrelevant', 'optional' => true ],
             [ 'type' => Application::ARG_TYPE_SIMPLE, 'name' => 'mandatory1', 'position' => 0 ],
             [ 'type' => Application::ARG_TYPE_SIMPLE, 'name' => 'mandatory2', 'position' => 1 ],
@@ -91,7 +158,7 @@ class ApplicationTest extends TestCase
     public function testGetArguments_WithConfig2()
     {
         $_SERVER['argv'] = [ '--foo', 'bar', '-a', '-yyes', 'hello', 'world' ];
-        $this->fixture->setArgumentConfiguration([
+        $this->start([
             [ 'type' => Application::ARG_TYPE_NAMED, 'name' => 'foo' ],
             [ 'type' => Application::ARG_TYPE_SWITCH, 'name' => 'another', 'short_name' => 'a', 'optional' => true ],
             [ 'type' => Application::ARG_TYPE_NAMED, 'name' => 'yet-another', 'short_name' => 'y', 'optional' => true ],
@@ -101,34 +168,23 @@ class ApplicationTest extends TestCase
         $this->assertEquals([ 'foo'=>'bar', 'another'=>'another', 'yet-another'=>'yes', 'm1' => 'hello', 'm2' => 'world' ], $this->fixture->getArguments());
     }
 
-    public function testGetController_NullIfNoneSet()
-    {
-        $this->assertNull($this->fixture->getController());
-    }
-
-    public function testGetController_ReturnsSetInstance()
-    {
-        $this->fixture->setController($this->mock_controller);
-        $this->assertSame($this->mock_controller, $this->fixture->getController());
-    }
-
-    public function testInvokeAction_ThrowsIfNoControllerSet()
+    public function testGetController_ThrowsIfIncorrectClass()
     {
         $this->expectException(\Exception::class);
-        $this->fixture->invokeAction('dummyActionName');
+        $this->start([], new \stdClass());
     }
 
     public function testInvokeAction_ThrowsForNonExistentAction()
     {
         $this->expectException(\Exception::class);
-        $this->fixture->setController($this->mock_controller);
+        $this->start();
         $this->fixture->invokeAction(self::NON_EXISTENT_CONTROLLER_ACTION);
     }
 
     public function testInvokeAction_CallsControllerMethodWithoutArgs()
     {
-        $this->mock_controller->expects($this->once())->method(self::CONTROLLER_ACTION_WITHOUT_ARGS);
-        $this->fixture->setController($this->mock_controller);
+        $this->controller_mock->expects($this->once())->method(self::CONTROLLER_ACTION_WITHOUT_ARGS);
+        $this->start();
         $this->fixture->invokeAction(self::CONTROLLER_ACTION_WITHOUT_ARGS);
     }
 
@@ -138,10 +194,10 @@ class ApplicationTest extends TestCase
         $arg1_value = 'my_string_value';
         $arg2_name = 'my_int_arg';
         $arg2_value = 123;
-        $this->mock_controller->expects($this->once())
+        $this->controller_mock->expects($this->once())
             ->method(self::CONTROLLER_ACTION_WITH_ARGS)
             ->with($arg1_value, $arg2_value);
-        $this->fixture->setController($this->mock_controller);
+        $this->start();
         $this->fixture->invokeAction(self::CONTROLLER_ACTION_WITH_ARGS, [$arg1_name=>$arg1_value, $arg2_name=>$arg2_value]);
     }
 
@@ -152,11 +208,11 @@ class ApplicationTest extends TestCase
         $arg2_name = 'my_int_arg';
         $arg2_value = 123;
         $expected_return_value = 'my return value';
-        $this->mock_controller->expects($this->any())
+        $this->controller_mock->expects($this->any())
             ->method(self::CONTROLLER_ACTION_WITH_ARGS)
             ->with($arg1_value, $arg2_value)
             ->will($this->returnValue($expected_return_value));
-        $this->fixture->setController($this->mock_controller);
+        $this->start();
         $actual_return_value = $this->fixture->invokeAction(self::CONTROLLER_ACTION_WITH_ARGS, [$arg1_name=>$arg1_value, $arg2_name=>$arg2_value]);
         $this->assertEquals($expected_return_value, $actual_return_value);
     }
