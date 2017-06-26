@@ -109,7 +109,8 @@ abstract class Application
             $arguments = [];
             $current_simple_arg_pos = 0;
             $current_arg_name = null;
-            foreach ($_SERVER['argv'] as $arg) {
+            $args_without_script_name = array_slice($_SERVER['argv'], 1);
+            foreach ($args_without_script_name as $arg) {
                 if (strpos($arg, '-') !== false) {
                     $long_name = strpos($arg, '--') !== false;
                     $current_arg_name = $long_name ? substr($arg, 2) :  substr($arg, 1, 1);
