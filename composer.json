@@ -10,9 +10,6 @@
     "autoload": {
         "psr-4": {
             "FsTest\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+        }
     }
 }
