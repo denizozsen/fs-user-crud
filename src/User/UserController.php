@@ -2,6 +2,7 @@
 
 namespace FsTest\User;
 
+use AOrm\Criteria;
 use FsTest\Framework\Core\Controller;
 
 /**
@@ -13,7 +14,11 @@ class UserController extends Controller
 {
     public function getAll(array $filters = [])
     {
-        $users = User::fetchAll($filters);
+        $criteria = Criteria::create();
+        foreach ($filters as $field => $value) {
+            $criteria->addCondition(User::condition()->like($field, "%{$value}%"));
+        }
+        $users = User::fetchAll($criteria);
         array_walk($users, function(User &$user) {
             $user = $user->getData();
         });
