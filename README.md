@@ -2,11 +2,11 @@
 
 FS User Crud is a tool for creating entries in a user table.
 
-## Why
+## Introduction
 
-The purpose of this project is for me to practice creating a PHP project with dependencies. It includes the following:
+FS User Crud is a framework for creating, reading, updating and deleting user records. It features:
 
-* An MVC structure for the basic CRUD operations for manipulating user records
+* An MVC framework for the basic CRUD operations
 * A database schema (or maybe a phinx migration) to create the database table(s)
 * Dependency management via Composer
 * 100% code coverage with PHPUnit tests
@@ -47,4 +47,33 @@ $ vagrant ssh
 $ cat /vagrant/db_schema.sql | mysql -Dmy_app
 
 $ exit
+```
+
+## Usage
+
+The functionality is provided by the command-line PHP application src/cli.php, which is used as follows.
+
+### Display usage instructions
+```bash
+$ php src/cli.php
+```
+
+### List all users
+```bash
+$ php src/cli.php --retrieve-all
+```
+
+### List users matching filters
+```bash
+$ php src/cli.php --retrieve FILTERS
+```
+
+### Create a new user
+```bash
+$ php src/cli.php --create "email=some.one@mail.com&first_name=John&last_name=Doe&password=hardT0Gue55"
+```
+
+### Update the email of existing user with id 123
+```bash
+$ php src/cli.php --update "user_id=123&email=changed@mail.com"
 ```
