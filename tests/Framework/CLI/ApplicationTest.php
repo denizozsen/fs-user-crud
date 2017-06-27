@@ -54,31 +54,6 @@ class ApplicationTest extends TestCase
         $this->controller = $this->controller_mock;
     }
 
-    private function start($argument_configuration = [], $controller = null)
-    {
-        $this->fixture_mock
-            ->expects($this->any())
-            ->method('getArgumentConfiguration')
-            ->willReturn($argument_configuration);
-
-        $this->fixture_mock
-            ->expects($this->any())
-            ->method('getController')
-            ->willReturn($controller ?: $this->controller);
-
-        $this->fixture->start();
-    }
-
-    private function startWithoutArgumentConfiguration($controller = null)
-    {
-        $this->fixture_without_argument_configuration_mock
-            ->expects($this->any())
-            ->method('getController')
-            ->willReturn($controller ?: $this->controller);
-
-        $this->fixture_without_argument_configuration->start();
-    }
-
     public function testArgumentConfiguration_ThrowsOnInvalidStructure1()
     {
         $this->expectException(\Exception::class);
@@ -132,21 +107,21 @@ class ApplicationTest extends TestCase
 
     public function testGetArguments_WithoutConfig1()
     {
-        $_SERVER['argv'] = [ 'hello', 'world' ];
-        $this->start([]);
+        $this->setCommandLineArguments([ 'hello', 'world' ]);
+        $this->start();
         $this->assertEquals([ 'hello', 'world' ], $this->fixture->getArguments());
     }
 
     public function testGetArguments_WithoutConfig2()
     {
-        $_SERVER['argv'] = [ '--foo', 'bar', '-a', 'some_value', 'hello', 'world' ];
-        $this->start([]);
+        $this->setCommandLineArguments([ '--foo', 'bar', '-a', 'some_value', 'hello', 'world' ]);
+        $this->start();
         $this->assertEquals([ 'foo' => 'bar', 'a' => 'some_value', 'hello', 'world' ], $this->fixture->getArguments());
     }
 
     public function testGetArguments_WithConfig1()
     {
-        $_SERVER['argv'] = [ 'hello', 'world' ];
+        $this->setCommandLineArguments([ 'hello', 'world' ]);
         $this->start([
             [ 'type' => Application::ARG_TYPE_SWITCH, 'name' => 'irrelevant', 'optional' => true ],
             [ 'type' => Application::ARG_TYPE_SIMPLE, 'name' => 'mandatory1', 'position' => 0 ],
@@ -157,7 +132,7 @@ class ApplicationTest extends TestCase
 
     public function testGetArguments_WithConfig2()
     {
-        $_SERVER['argv'] = [ '--foo', 'bar', '-a', '-yyes', 'hello', 'world' ];
+        $this->setCommandLineArguments([ '--foo', 'bar', '-a', '-yyes', 'hello', 'world' ]);
         $this->start([
             [ 'type' => Application::ARG_TYPE_NAMED, 'name' => 'foo' ],
             [ 'type' => Application::ARG_TYPE_SWITCH, 'name' => 'another', 'short_name' => 'a', 'optional' => true ],
@@ -172,5 +147,35 @@ class ApplicationTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->start([], new \stdClass());
+    }
+
+    private function start($argument_configuration = [], $controller = null)
+    {
+        $this->fixture_mock
+            ->expects($this->any())
+            ->method('getArgumentConfiguration')
+            ->willReturn($argument_configuration);
+
+        $this->fixture_mock
+            ->expects($this->any())
+            ->method('getController')
+            ->willReturn($controller ?: $this->controller);
+
+        $this->fixture->start();
+    }
+
+    private function startWithoutArgumentConfiguration($controller = null)
+    {
+        $this->fixture_without_argument_configuration_mock
+            ->expects($this->any())
+            ->method('getController')
+            ->willReturn($controller ?: $this->controller);
+
+        $this->fixture_without_argument_configuration->start();
+    }
+
+    private function setCommandLineArguments(array $args)
+    {
+        $_SERVER['argv'] = array_merge([ 'dummy.php' ], $args);
     }
 }
