@@ -4,6 +4,11 @@ namespace FsTest\User;
 
 use FsTest\Framework\CLI\Application;
 
+/**
+ * The CLI application for managing users with simple CRUD operations.
+ *
+ * @package FsTest\User
+ */
 class UserCliApp extends Application
 {
     const ACTION_CREATE       = 'create';
@@ -13,7 +18,7 @@ class UserCliApp extends Application
     const ACTION_RETRIEVE_ALL = 'retrieve-all';
 
     /**
-     * This method must be overridden by the CLI application sub class to implement the program.
+     * {@inheritdoc}
      */
     protected function run()
     {
@@ -66,17 +71,33 @@ class UserCliApp extends Application
         }
     }
 
-    private function convertInputToArray($input)
+
+    /**
+     * Converts the given query string to an associative array
+     *
+     * @param string $query_string a query string
+     * @return array associative array-represdentation of the given query string
+     */
+    private function convertInputToArray($query_string)
     {
-        parse_str($input, $array);
+        parse_str($query_string, $array);
         return $array;
     }
 
+    /**
+     * Converts the given associative array to a human-readable string
+     *
+     * @param array $array an associative array
+     * @return string a human-readable string representation of the given associative array
+     */
     private function convertArrayToOutput(array $array)
     {
         return print_r($array, true);
     }
 
+    /**
+     * @return null|string the action the user requested (one of the ACTION_ constants), or null, if no action was requested
+     */
     private function getAction()
     {
         $args = $this->getArguments();
@@ -96,6 +117,9 @@ class UserCliApp extends Application
         return null;
     }
 
+    /**
+     * Prints usage instruction for this application to the standard output stream.
+     */
     private function printUsage()
     {
         echo 'Usage: php cli.php ACTION' . PHP_EOL;

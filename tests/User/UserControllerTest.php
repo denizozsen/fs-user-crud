@@ -45,6 +45,9 @@ class UserControllerTest extends TestCase
         Model::setCrudOverrideClass(null);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setUp()
     {
         parent::setUp();

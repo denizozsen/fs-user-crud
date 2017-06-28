@@ -31,6 +31,9 @@ class ApplicationTest extends TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject $controller_mock */
     private $controller_mock;
 
+    /**
+     * {@inheritdoc}
+     */
     protected function setUp()
     {
         parent::setUp();
