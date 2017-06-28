@@ -2,7 +2,6 @@
 
 namespace FsTest\Framework\CLI;
 use FsTest\Framework\Core\Controller;
-use PHPUnit\Framework\Error\Error;
 
 /**
  * Base class for CLI applications (aka command line tools)..

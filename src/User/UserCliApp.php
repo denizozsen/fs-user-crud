@@ -3,8 +3,6 @@
 namespace FsTest\User;
 
 use FsTest\Framework\CLI\Application;
-use FsTest\Framework\Core\Controller;
-use TheSeer\Tokenizer\Exception;
 
 class UserCliApp extends Application
 {
@@ -63,7 +61,7 @@ class UserCliApp extends Application
 
             }
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             echo "Error: {$e->getMessage()}";
         }
     }
@@ -119,15 +117,16 @@ class UserCliApp extends Application
     }
 
     /**
-     * This method must be overridden by the CLI application sub class to provide the CLI application's controller.
-     *
-     * @return Controller the CLI application's controller
+     * {@inheritdoc}
      */
     protected function getController()
     {
         return new UserController();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getArgumentConfiguration()
     {
         return [

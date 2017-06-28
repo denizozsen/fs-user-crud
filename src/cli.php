@@ -3,6 +3,8 @@
 // Composer class auto loader
 include __DIR__ . '/../vendor/autoload.php';
 
+// TODO - the database credentials and ORM registration should be done via some kind of configuration mechanism
+
 // Connect to db, using PDO
 $host = '127.0.0.1';
 $db = 'my_app';
