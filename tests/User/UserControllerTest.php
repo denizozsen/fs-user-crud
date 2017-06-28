@@ -2,9 +2,9 @@
 
 namespace FsTest\User;
 
+use AOrm\AOrmException;
 use AOrm\Criteria;
 use AOrm\Crud;
-use AOrm\DenOrmException;
 use AOrm\Model;
 use PHPUnit\Framework\TestCase;
 
@@ -20,7 +20,7 @@ class UserControllerTest extends TestCase
     const TEST_USER_2 = [ 'user_id' => 250,  'email' => 'test2.user@mail.com', 'first_name' => 'Test2', 'last_name' => 'User2', 'password' => 'cc399d73903f06ee694032ab0538f05634ff7e1ce5e8e50ac330a871484f34cf5' ];
     const TEST_USER_3 = [ 'user_id' => 3333, 'email' => 'another.person@mail.com', 'first_name' => 'Another', 'last_name' => 'Person', 'password' => 'f05cf0e1b0f53e4962118589d0dea67fcc461280dc7f1fbdc297ba2ec3d1070a' ];
     const TEST_EXISTING_USERS = [ self::TEST_USER_1, self::TEST_USER_2, self::TEST_USER_3 ];
-    const TEST_NEW_USER = [ 'email' => 'new.user@mail.com', 'first_name' => 'New', 'last_name' => 'User', 'password' => '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5' ];
+    const TEST_NEW_USER = [ 'email' => 'new.user@mail.com', 'first_name' => 'New', 'last_name' => 'User', 'password' => '1234567' ];
 
     /** @var UserController $fixture */
     private $fixture;
@@ -79,12 +79,14 @@ class UserControllerTest extends TestCase
     {
         $this->fixture->save(self::TEST_NEW_USER);
         $this->assertCount(1, MockCrud::$saves);
-        $this->assertEquals(self::TEST_NEW_USER, MockCrud::$saves[0]);
+        $expected_user_data = self::TEST_NEW_USER;
+        $expected_user_data['password'] = openssl_digest($expected_user_data['password'], 'sha512');
+        $this->assertEquals($expected_user_data, MockCrud::$saves[0]);
     }
 
     public function testSave_ExistingUser()
     {
-        MockCrud::$to_return = self::TEST_EXISTING_USERS;
+        MockCrud::$to_return = [ self::TEST_USER_1 ];
         $this->fixture->save(self::TEST_USER_1);
         $this->assertCount(1, MockCrud::$saves);
         $this->assertEquals(self::TEST_USER_1, MockCrud::$saves[0]);
@@ -100,7 +102,7 @@ class UserControllerTest extends TestCase
     public function testDelete_ExceptionOnNonExistentId()
     {
         $user_id = 999999;
-        $this->expectException(DenOrmException::class);
+        $this->expectException(AOrmException::class);
         $this->fixture->delete($user_id);
         $this->assertTrue(true);
     }

@@ -36,6 +36,9 @@ class UserController extends Controller
      * that user_id is updated, if one exists (otherwise an exception is thrown). Otherwise a new record with
      * the given data is inserted.
      *
+     * Note that the value for the password field, if given, is hashed using the SHA-512 algorithm, before the record
+     * is saved to the database.
+     *
      * @param array $user_data the data of a single user record, to be saved to the database
      * @throws \Exception if something goes wrong
      */
@@ -56,12 +59,18 @@ class UserController extends Controller
         }
 
         // If a password is set, hash it, using SHA-512
-        if (isset($user_data['password']) && $user_data['password']) {
+        if (
+            isset($user_data['password'])
+            && $user_data['password']
+            && ( $user_model->isNew() || $user_model->password != $user_data['password'] )
+        ) {
             $user_data['password'] = openssl_digest($user_data['password'], 'sha512');
         }
 
         // Save the given user data in the database
-        $user_model->setData($user_data);
+        foreach ($user_data as $key => $value) {
+            $user_model->$key = $value;
+        }
         $user_model->save();
     }
 
