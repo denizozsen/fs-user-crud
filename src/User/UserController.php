@@ -54,6 +54,13 @@ class UserController extends Controller
             unset($user_data['user_id']);
             $user_model = new User();
         }
+
+        // If a password is set, hash it, using SHA-512
+        if (isset($user_data['password']) && $user_data['password']) {
+            $user_data['password'] = openssl_digest($user_data['password'], 'sha512');
+        }
+
+        // Save the given user data in the database
         $user_model->setData($user_data);
         $user_model->save();
     }
