@@ -2,8 +2,11 @@
 
 ## Introduction
 
-FS User Crud is a framework for creating, reading, updating and deleting user records, within a MySQL database.
-It features:
+FS User Crud is a framework for creating, reading, updating and deleting user records, within a MySQL database. The
+aim of this project is an exercise in creating a well-structured PHP project with Composer dependencies, namespacing,
+unit tests and more.
+
+The project includes:
 
 * A command-line interface that lets the user issue CRUD commands
 * An MVC framework, used by the command-line interface
@@ -16,9 +19,9 @@ It features:
 
 ## A note on "re-inventing the wheel"
 
-I could have re-used existing well-tested software, such as a command-line tool framework or an argument parser.
-However I chose to implement everything myself, as an exercise. The AOrm project dependency (via Composer) was also
-developed by me.
+If this was a real-world application, I would certainly re-use existing well-tested software for parts, such as a
+command-line tool framework or an argument parser. However I chose to implement everything myself, as an exercise.
+The AOrm project dependency was also developed by me.
 
 ## Pre-requisites
 
@@ -32,7 +35,7 @@ The following need to be installed on your machine, before you can set up and us
 
 ## Dependencies installed via Composer
 
-The only dependency is AOrm - a simple ORM library for PHP.
+The only production dependency is AOrm - a simple ORM library for PHP.
 
 ## Development dependencies installed via Composer
 
