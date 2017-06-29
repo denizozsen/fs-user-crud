@@ -75,8 +75,17 @@ $ exit
 
 ## Usage
 
-The functionality is provided by the command-line PHP application src/cli.php. Use it as follows (assuming the current
-working directory in your terminal is the root of the cloned fs-user-crud repository).
+The functionality is provided by the command-line PHP application src/cli.php. The following assumes that the current
+working directory in your terminal is the root of the cloned fs-user-crud repository.
+
+Note: the Vagrant configuration is such that you should be able to use these commands from your host OS. However, if
+you experience any errors related to the MySQL connection, please use the command-line interface from within the guest
+OS, by running the following commands first, from within the project root:
+```bash
+$ vagrant ssh
+
+$ cd /vagrant
+```
 
 ### Display usage instructions
 ```bash
