@@ -16,6 +16,12 @@ It features:
 * Compliance with PSR-2 coding standards
 * A Vagrant setup for running MySQL
 
+## A note on "re-inventing the wheel"
+
+I could have re-used existing well-tested software, such as a command-line tool framework or an argument parser.
+However I chose to implement everything myself, as an exercise. The AOrm project dependency (via Composer) was also
+developed by me.
+
 ## Pre-requisites
 
 The following need to be installed on your machine, before you can set up and use fs-user-crud.
