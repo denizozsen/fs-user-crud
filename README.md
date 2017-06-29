@@ -70,6 +70,8 @@ $ cat /vagrant/db_schema.sql | mysql -Dmy_app
 $ exit
 ```
 
+**The installation is now done. Congratulations!**
+
 ## Usage
 
 The functionality is provided by the command-line PHP application src/cli.php. The following assumes that the current
