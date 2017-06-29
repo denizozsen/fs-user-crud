@@ -34,7 +34,7 @@ T2. Analyse requirements and create development tasks
 
   Estimate: 2-4 hours
   Actual: 2h 15m
-  Status: Done for now (might need some tweaking later on)
+  Status: Done (might need some tweaking later on)
 
 
 
@@ -65,8 +65,8 @@ T4. Data model for user
   Deliverables:
       * Data model class (and any supporting classes, as necessary), implementing the required functionality
   Estimate: 1-2 hours
-  Actual: 15m
-  Status: In Progress
+  Actual: 1h
+  Status: Done
 
 
 
@@ -85,7 +85,7 @@ T5. CLI framework
   Deliverables:
       * Classes implementing the required functionality
   Estimate: 1-3 hours
-  Actual: 5h
+  Actual: 6h
   Status: Done
 
 
@@ -98,8 +98,8 @@ T6. CLI application for user management
   Deliverables:
       * A class that extends CliApp and implements the required functionality
   Estimate: 30m
-  Actual:
-  Status: In Progress
+  Actual: 1h
+  Status: Done
 
 
 
@@ -108,12 +108,12 @@ T7. Routing Framework
   Description:
       * Request handler base class
       * Ability to configure a mapping from request path to Handler class
-      * .htaccess rules to let a single php file handle all requests, except for requests to image files
+      * Webserver/rewrite rules to let a single php file handle all requests, except for requests to image files
       * Route request to appropriate handler
   Deliverables:
       * Classes implementing the required functionality
-      * .htaccess file containing the required URL rewrite rule
-      * Entry point PHP script, targeted by .htaccess rewrite rule. This will instantiate and make calls to theappropriate
+      * Webserver/rewrite rules for nginx
+      * Entry point PHP script, targeted by rewrite rule. This will instantiate and make calls to theappropriate
         request handler object.
       * Configuration mechanism for creating a request-to-handler mapping
   Estimate: 2-8 hours
