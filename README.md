@@ -49,6 +49,8 @@ $ cd fs-user-crud
 
 $ composer install
 ```
+Note: if you don't have a GitHub SSH key setup, you can use the HTTPS method for cloning the repository, by replacing
+the first of these commands with `https://github.com/denizozsen/fs-user-crud.git`
 
 ### Set up virtual machine
 ```bash
@@ -66,7 +68,8 @@ $ exit
 
 ## Usage
 
-The functionality is provided by the command-line PHP application src/cli.php, which is used as follows.
+The functionality is provided by the command-line PHP application src/cli.php. Use it as follows (assuming the current
+working directory in your terminal is the root of the cloned fs-user-crud repository).
 
 ### Display usage instructions
 ```bash
