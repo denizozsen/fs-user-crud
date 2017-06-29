@@ -1,7 +1,5 @@
 # FS User Crud
 
-FS User Crud is a tool for creating entries in a user table.
-
 ## Introduction
 
 FS User Crud is a framework for creating, reading, updating and deleting user records, within a MySQL database.
