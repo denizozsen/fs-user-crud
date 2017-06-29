@@ -17,6 +17,7 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
     config.vm.box = "bento/ubuntu-16.04"
     config.vm.hostname = GUEST_HOSTNAME
     config.vm.network "private_network", ip: GUEST_NETWORK_IP
+    config.vm.network "forwarded_port", guest: 3306, host: 3306
 
     # Allow more memory usage for the VM
     config.vm.provider :virtualbox do |v|
@@ -38,6 +39,8 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
             --url=https://github.com/formstack/server-playbooks-devtest.git \
             --inventory-file inventories/localhost \
             dev-standalone.yml
+        sed -i 's/bind-address/#bind-address/g' /etc/mysql/mysql.conf.d/mysqld.cnf
+        service mysql restart
     SHELL
 
 end
