@@ -6,6 +6,7 @@ use FsTest\Framework\CLI\Application;
 
 /**
  * The CLI application for managing users with simple CRUD operations.
+ * This can be considered the "View" part of the MVC pattern.
  *
  * @package FsTest\User
  */
