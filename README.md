@@ -113,3 +113,15 @@ $ php src/cli.php --update "user_id=123&email=changed@mail.com"
 ```bash
 $ php src/cli.php --delete 5
 ```
+
+## Future
+
+Moving on from here, there are still lots of interesting features that could be added to this project.
+
+Some examples that I would like to add:
+
+* Web request routing framework: route URLs to action methods in Handler objects
+* JSON API that provides access to the user CRUD operations
+* An Angular-based web application that adds a nice GUI that communicates with the JSON API
+* A general-purpose configuration mechanism (perhaps based on environment variables), to allow configuring things like the database credentials
+* More to come...

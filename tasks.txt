@@ -103,7 +103,7 @@ T6. CLI application for user management
 
 
 
-T7. Routing Framework
+T7. [FUTURE] Routing Framework
 
   Description:
       * Request handler base class
@@ -121,7 +121,7 @@ T7. Routing Framework
   Status: To Do
 
 
-T8. User JSON API
+T8. [FUTURE] User JSON API
 
   Description:
       * Sub-class of request handler class (from T7) that passes incoming requests to a configured Controller
@@ -134,7 +134,7 @@ T8. User JSON API
 
 
 
-T9. [OPTIONAL] Angular-based web application
+T9. [FUTURE] Angular-based web application
 
   Description:
       If there is enough time, a web application for the User CRUD operations will be developed, based on Angular.
