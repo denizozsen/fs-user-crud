@@ -4,15 +4,17 @@ FS User Crud is a tool for creating entries in a user table.
 
 ## Introduction
 
-FS User Crud is a framework for creating, reading, updating and deleting user records. It features:
+FS User Crud is a framework for creating, reading, updating and deleting user records, within a MySQL database.
+It features:
 
-* An MVC framework for the basic CRUD operations
-* A database schema (or maybe a phinx migration) to create the database table(s)
+* A command-line interface that lets the user issue CRUD commands
+* An MVC framework, used by the command-line interface
+* A database schema to create the user table
 * Dependency management via Composer
-* 100% code coverage with PHPUnit tests
-* Full code documentation via PHP code blocks
+* 100% method code coverage by PHPUnit tests
+* Full code documentation via PHPDoc comments
 * Compliance with PSR-2 coding standards
-* A Vagrant setup for running MySQL (and maybe a webserver)
+* A Vagrant setup for running MySQL
 
 ## Pre-requisites
 
@@ -24,9 +26,18 @@ The following need to be installed on your machine, before you can set up and us
 * Vagrant
 * VirtualBox
 
+## Dependencies installed via Composer
+
+The only dependency is AOrm - a simple ORM library for PHP.
+
+## Development dependencies installed via Composer
+
+PHPUnit is set as a require-dev dependency, which is only used for development or testing purposes, and therefore
+optional.
+
 ## Set up instructions
 
-### Download and install pre-requisites
+### Download and install dependencies
 ```bash
 $ git clone git@github.com:denizozsen/fs-user-crud
 
@@ -63,9 +74,9 @@ $ php src/cli.php
 $ php src/cli.php --retrieve-all
 ```
 
-### List users matching filters
+### List users that match given filters, e.g. where the last name contains "Smith" and the email contains "gmail.com"
 ```bash
-$ php src/cli.php --retrieve FILTERS
+$ php src/cli.php --retrieve "last_name=Smith&email=gmail.com"
 ```
 
 ### Create a new user
@@ -76,4 +87,9 @@ $ php src/cli.php --create "email=some.one@mail.com&first_name=John&last_name=Do
 ### Update the email of existing user with id 123
 ```bash
 $ php src/cli.php --update "user_id=123&email=changed@mail.com"
+```
+
+### Delete the existing user with id 5
+```bash
+$ php src/cli.php --delete 5
 ```
