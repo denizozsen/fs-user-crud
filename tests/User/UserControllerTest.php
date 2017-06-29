@@ -28,11 +28,11 @@ class UserControllerTest extends TestCase
     /**
      * {@inheritdoc}
      *
-     * Overrides all AOrm crud instances with instances of class MockCrud, defined at the bottom of this file.
+     * Overrides all AOrm crud instances with instances of class UserControllerTestMockCrud, defined at the bottom of this file.
      */
     public static function setUpBeforeClass()
     {
-        Model::setCrudOverrideClass(MockCrud::class);
+        Model::setCrudOverrideClass(UserControllerTestMockCrud::class);
     }
 
     /**
@@ -52,44 +52,44 @@ class UserControllerTest extends TestCase
     {
         parent::setUp();
         $this->fixture = new UserController();
-        MockCrud::reset();
+        UserControllerTestMockCrud::reset();
     }
 
     public function testGetAll()
     {
-        MockCrud::$to_return = self::TEST_EXISTING_USERS;
+        UserControllerTestMockCrud::$to_return = self::TEST_EXISTING_USERS;
         $actual = $this->fixture->getAll();
         $this->assertTrue(is_array($actual));
         $this->assertEquals(self::TEST_EXISTING_USERS, $actual);
-        $this->assertCount(1, MockCrud::$criterias);
+        $this->assertCount(1, UserControllerTestMockCrud::$criterias);
         /** @var Criteria $criteria */
-        $criteria = MockCrud::$criterias[0];
+        $criteria = UserControllerTestMockCrud::$criterias[0];
         $this->assertNull($criteria->getCondition());
     }
 
     public function testGetAll_WithFilter()
     {
-        MockCrud::$to_return = self::TEST_EXISTING_USERS;
+        UserControllerTestMockCrud::$to_return = self::TEST_EXISTING_USERS;
         $this->fixture->getAll(['first_name'=>'Test']);
-        $this->assertCount(1, MockCrud::$criterias);
-        $this->assertInstanceOf(Criteria::class, MockCrud::$criterias[0]);
+        $this->assertCount(1, UserControllerTestMockCrud::$criterias);
+        $this->assertInstanceOf(Criteria::class, UserControllerTestMockCrud::$criterias[0]);
     }
 
     public function testSave_NonExistentUser()
     {
         $this->fixture->save(self::TEST_NEW_USER);
-        $this->assertCount(1, MockCrud::$saves);
+        $this->assertCount(1, UserControllerTestMockCrud::$saves);
         $expected_user_data = self::TEST_NEW_USER;
         $expected_user_data['password'] = openssl_digest($expected_user_data['password'], 'sha512');
-        $this->assertEquals($expected_user_data, MockCrud::$saves[0]);
+        $this->assertEquals($expected_user_data, UserControllerTestMockCrud::$saves[0]);
     }
 
     public function testSave_ExistingUser()
     {
-        MockCrud::$to_return = [ self::TEST_USER_1 ];
+        UserControllerTestMockCrud::$to_return = [ self::TEST_USER_1 ];
         $this->fixture->save(self::TEST_USER_1);
-        $this->assertCount(1, MockCrud::$saves);
-        $this->assertEquals(self::TEST_USER_1, MockCrud::$saves[0]);
+        $this->assertCount(1, UserControllerTestMockCrud::$saves);
+        $this->assertEquals(self::TEST_USER_1, UserControllerTestMockCrud::$saves[0]);
     }
 
     public function testDelete_ExceptionOnInvalidId()
@@ -109,11 +109,11 @@ class UserControllerTest extends TestCase
 
     public function testDelete_ExistingId()
     {
-        MockCrud::$to_return = self::TEST_EXISTING_USERS;
-        $user_id = MockCrud::$to_return[0]['user_id'];
+        UserControllerTestMockCrud::$to_return = self::TEST_EXISTING_USERS;
+        $user_id = UserControllerTestMockCrud::$to_return[0]['user_id'];
         $this->fixture->delete($user_id);
-        $this->assertCount(1, MockCrud::$deletes);
-        $this->assertEquals($user_id, MockCrud::$deletes[0]);
+        $this->assertCount(1, UserControllerTestMockCrud::$deletes);
+        $this->assertEquals($user_id, UserControllerTestMockCrud::$deletes[0]);
     }
 }
 
@@ -122,7 +122,7 @@ class UserControllerTest extends TestCase
  *
  * @package FsTest\User
  */
-class MockCrud implements Crud
+class UserControllerTestMockCrud implements Crud
 {
     public static $to_return = [];
 
