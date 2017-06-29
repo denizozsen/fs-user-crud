@@ -27,7 +27,7 @@ The AOrm project dependency was also developed by me.
 
 The following need to be installed on your machine, before you can set up and use fs-user-crud.
 
-* PHP >=5.6
+* PHP >=5.6 (if installing dev dependencies, PHP >= 7.0 is required)
 * git
 * Composer
 * Vagrant
@@ -50,7 +50,7 @@ $ git clone git@github.com:denizozsen/fs-user-crud
 
 $ cd fs-user-crud
 
-$ composer install
+$ composer install --no-dev
 ```
 Note: if you don't have a GitHub SSH key setup, you can use the HTTPS method for cloning the repository, by replacing
 the first of these commands with `git clone https://github.com/denizozsen/fs-user-crud.git`
