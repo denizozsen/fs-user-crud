@@ -13,6 +13,10 @@ $password = 'secret';
 $dsn = "mysql:dbname={$db};host={$host}";
 $pdo = new PDO($dsn, $user, $password);
 
+// Tell PDO to throw exceptions on errors
+$pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);;
+
 // Tell DenOrm to use the PDO instance we've just created
 \AOrm\Registry::registerPdoConnection($pdo);
 
