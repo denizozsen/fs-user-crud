@@ -118,7 +118,7 @@ $ php src/cli.php --delete 5
 
 Moving on from here, there are still lots of interesting features that could be added to this project.
 
-Some examples that I would like to add:
+Here's what I would like to add next:
 
 * Web request routing framework: route URLs to action methods in Handler objects
 * JSON API that provides access to the user CRUD operations
