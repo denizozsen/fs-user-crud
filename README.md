@@ -52,8 +52,12 @@ $ cd fs-user-crud
 
 $ composer install --no-dev
 ```
-Note: if you don't have a GitHub SSH key setup, you can use the HTTPS method for cloning the repository, by replacing
-the first of these commands with `git clone https://github.com/denizozsen/fs-user-crud.git`
+**Note 1**
+If you don't have a GitHub SSH key setup, you can use the HTTPS method for cloning the repository, by replacing the
+first of these commands with `git clone https://github.com/denizozsen/fs-user-crud.git`
+**Note 2**
+If you wish to run the PHP Unit tests, you have to install the dev requirements, too. To do this, simply run
+`composer install` without the --no-dev option. You will need at least version 7.0 of PHP for this.
 
 ### Set up virtual machine
 ```bash
