@@ -2,8 +2,8 @@
 
 ## Introduction
 
-FS User Crud is a framework for creating, reading, updating and deleting user records, within a MySQL database. The
-aim of this project is an exercise in creating a well-structured PHP project with Composer dependencies, namespacing,
+FS User Crud is a framework for creating, reading, updating and deleting user records, within a MySQL database.
+This project is an exercise in creating a well-structured PHP project with Composer dependencies, namespacing,
 unit tests and more.
 
 The project includes:
