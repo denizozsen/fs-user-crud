@@ -4,7 +4,6 @@ namespace FsTest\User;
 
 use AOrm\Criteria;
 use AOrm\Crud;
-use AOrm\Model;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,26 +13,6 @@ use PHPUnit\Framework\TestCase;
  */
 class UserTest extends TestCase
 {
-    /**
-     * {@inheritdoc}
-     *
-     * Overrides all AOrm crud instances with instances of class UserTestMockCrud, defined at the bottom of this file.
-     */
-    public static function setUpBeforeClass()
-    {
-        Model::setCrudOverrideClass(UserTestMockCrud::class);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * Cancels the crud override that was set in setUpBeforeClass().
-     */
-    public static function tearDownAfterClass()
-    {
-        Model::setCrudOverrideClass(null);
-    }
-
     private function newPopulatedUser()
     {
         $user = new User();
@@ -135,51 +114,5 @@ class UserTest extends TestCase
         $user = $this->newPopulatedUser();
         $user->password = '';
         $user->validate();
-    }
-}
-
-/**
- * Mock implementation for faking the Crud to the AOrm user model and testing what the UserController does.
- *
- * @package FsTest\User
- */
-class UserTestMockCrud implements Crud
-{
-    public function __construct($model_class)
-    {
-        $this->model_class = $model_class;
-    }
-
-    public function getModelClass()
-    {
-        return $this->model_class;
-    }
-
-    public function getPrimaryKey()
-    {
-        return 'user_id';
-    }
-
-    public function fetchOne(Criteria $criteria = null)
-    {
-        return null;
-    }
-
-    public function fetchAll(Criteria $criteria = null)
-    {
-        return [];
-    }
-
-    public function getRelatedJoinFragment($relation)
-    {
-        return null;
-    }
-
-    public function save(array $record)
-    {
-    }
-
-    public function delete($pk_value)
-    {
     }
 }
