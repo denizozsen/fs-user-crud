@@ -49,7 +49,7 @@ class UserController extends Controller
         $user_model = null;
         if (
             !empty($user_data['user_id'])
-            && $user_data['user_id'] == (int)$user_data['user_id']
+            && $user_data['user_id'] == (string)(int)$user_data['user_id']
             && $user_data['user_id'] > 0
         ) {
             $user_model = User::fetchByPrimaryKey($user_data['user_id']);
