@@ -68,7 +68,7 @@ class UserCliApp extends Application
             }
 
         } catch (\Exception $e) {
-            echo "Error: {$e->getMessage()}";
+            echo "Error: {$e->getMessage()}" . PHP_EOL;
         }
     }
 
