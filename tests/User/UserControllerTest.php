@@ -129,7 +129,6 @@ class UserControllerTestMockCrud implements Crud
     public static $criterias = [];
     public static $deletes = [];
     public static $saves = [];
-    public static $inserts = [];
 
     private $model_class;
 
@@ -139,7 +138,6 @@ class UserControllerTestMockCrud implements Crud
         self::$criterias = [];
         self::$deletes = [];
         self::$saves = [];
-        self::$inserts = [];
     }
 
     public function __construct($model_class)
@@ -188,7 +186,7 @@ class UserControllerTestMockCrud implements Crud
 
     public function insert(array $record)
     {
-        self::$inserts[] = $record;
+        self::$saves[] = $record;
     }
 
     public function delete($pk_value)
