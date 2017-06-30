@@ -38,6 +38,9 @@ class UserCliApp extends Application
 
                 case self::ACTION_UPDATE:
                     $user = $this->convertInputToArray($args['update']);
+                    if ( !isset($user['user_id']) || $user['user_id'] != (string)(int)$user['user_id'] ) {
+                        throw new \ErrorException("Update requires a user_id, which must be a positive integer");
+                    }
                     $controller->save($user);
                     echo "The user was successfully updated." . PHP_EOL;
                     break;
