@@ -25,14 +25,14 @@ abstract class Application
     /**
      * This method must be overridden by the CLI application sub class to implement the program.
      */
-    protected abstract function run();
+    abstract protected function run();
 
     /**
      * This method must be overridden by the CLI application sub class to provide the CLI application's controller.
      *
      * @return Controller the CLI application's controller
      */
-    protected abstract function getController();
+    abstract protected function getController();
 
     /**
      * This method may be overridden by the CLI application sub class to return the argument configuration for the
