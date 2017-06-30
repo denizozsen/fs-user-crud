@@ -25,7 +25,7 @@ class UserController extends Controller
             $criteria->addCondition(User::condition()->like($field, "%{$value}%"));
         }
         $users = User::fetchAll($criteria);
-        array_walk($users, function(User &$user) {
+        array_walk($users, function (User &$user) {
             $user = $user->getData();
         });
         return $users;
