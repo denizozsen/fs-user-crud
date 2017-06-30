@@ -116,6 +116,16 @@ $ php src/cli.php --update "user_id=123&email=changed@mail.com"
 $ php src/cli.php --delete 5
 ```
 
+## Tests
+
+The project includes a unit test suite, based on PHPUnit. These can be run via the PHPUnit that is included
+as a require-dev dependency. E.g. in a terminal, change the current working directory to the root directory of the
+project, then type the following:
+
+```bash
+$ vendor/bin/phpunit
+```
+
 ## Future
 
 Moving on from here, there are still lots of interesting features that could be added to this project.
