@@ -71,7 +71,11 @@ class UserController extends Controller
         foreach ($user_data as $key => $value) {
             $user_model->$key = $value;
         }
-        $user_model->save();
+        if ($user_model->isNew()) {
+            $user_model->insert();
+        } else {
+            $user_model->save();
+        }
     }
 
     /**
