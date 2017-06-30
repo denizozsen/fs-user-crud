@@ -165,6 +165,16 @@ class UserCliAppTest extends TestCase
         $this->fixture->start();
     }
 
+    public function testRun_ThrowsOnOmittingUserIdInUpdate()
+    {
+        $_SERVER['argv'] = [ 'dummy.php', '-u', 'email=my.mail@mail.com&first_name=My&last_name=Name' ];
+        ob_start();
+        $this->fixture->start();
+        $output = ob_get_clean();
+        $output_contains_error = strpos(strtolower($output), 'error') !== false;
+        $this->assertTrue($output_contains_error);
+    }
+
     public function testRun_CallsDelete1()
     {
         $this->doTestRun_CallsDelete('--delete');
