@@ -133,7 +133,7 @@ Moving on from here, there are still lots of interesting features that could be 
 Here's what I would like to add next:
 
 * Web request routing framework: route URLs to action methods in Handler objects
-* JSON API that provides access to the user CRUD operations
+* REST API that provides access to the user CRUD operations
 * An Angular-based web application that adds a nice GUI that communicates with the JSON API
 * A general-purpose configuration mechanism (perhaps based on environment variables), to allow configuring things like the database credentials
 * More to come...
